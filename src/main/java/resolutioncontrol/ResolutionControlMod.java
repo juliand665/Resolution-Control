@@ -1,14 +1,34 @@
 package resolutioncontrol;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.GlFramebuffer;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
+import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
+import resolutioncontrol.client.gui.screen.SettingsScreen;
+import resolutioncontrol.util.KeyBindingHandler;
 
 import javax.annotation.Nullable;
 
 public class ResolutionControlMod implements ModInitializer {
 	private static ResolutionControlMod instance;
+	private static FabricKeyBinding settingsKeyBinding = FabricKeyBinding.Builder.create(
+		identifier("settings"),
+		InputUtil.Type.KEYSYM,
+		GLFW.GLFW_KEY_P,
+		"Resolution Control"
+	).build();
+	
+	public static final String MOD_ID = "resolutioncontrol";
+	
+	public static Identifier identifier(String path) {
+		return new Identifier(MOD_ID, path);
+	}
 	
 	public static ResolutionControlMod getInstance() {
 		return instance;
@@ -25,10 +45,16 @@ public class ResolutionControlMod implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 		instance = this;
-	}
-	
-	public int getCurrentScaleFactor() {
-		return shouldScale ? scaleFactor : 1;
+		
+		KeyBindingRegistry.INSTANCE.register(settingsKeyBinding);
+		
+		ClientTickCallback.EVENT.register(new KeyBindingHandler(settingsKeyBinding) {
+			@Override
+			public void handlePress() {
+				System.out.println("pressed!");
+				MinecraftClient.getInstance().openScreen(new SettingsScreen());
+			}
+		});
 	}
 	
 	public void setShouldScale(boolean shouldScale) {
@@ -52,6 +78,10 @@ public class ResolutionControlMod implements ModInitializer {
 		}
 	}
 	
+	public int getScaleFactor() {
+		return scaleFactor;
+	}
+	
 	public void setScaleFactor(int scaleFactor) {
 		if (scaleFactor == this.scaleFactor) return;
 		
@@ -64,19 +94,22 @@ public class ResolutionControlMod implements ModInitializer {
 		updateFramebufferSize();
 	}
 	
+	public int getCurrentScaleFactor() {
+		return shouldScale ? scaleFactor : 1;
+	}
+	
 	public void onResolutionChanged() {
-		System.out.println("resolution changed!");
 		if (framebuffer != null) {
 			updateFramebufferSize();
 		}
 	}
 	
 	private void updateFramebufferSize() {
+		assert framebuffer != null;
+		
 		Window window = MinecraftClient.getInstance().window;
 		boolean prev = shouldScale;
 		shouldScale = true;
-		System.out.println("window size is " + window.getWidth() + "×" + window.getHeight());
-		System.out.println("window framebuffer size is " + window.getFramebufferWidth() + "×" + window.getFramebufferHeight());
 		framebuffer.resize(window.getFramebufferWidth(), window.getFramebufferHeight(), MinecraftClient.IS_SYSTEM_MAC);
 		shouldScale = prev;
 	}
