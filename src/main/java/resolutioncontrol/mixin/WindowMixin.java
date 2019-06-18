@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import resolutioncontrol.ResolutionControlMod;
 
 @Mixin(Window.class)
@@ -16,33 +17,24 @@ public class WindowMixin {
 	@Shadow
 	private double scaleFactor;
 	
-	/**
-	 @author Julian Dunskus
-	 */
-	@Overwrite
-	public int getFramebufferWidth() {
-		return scale(framebufferWidth);
+	@Inject(at = @At("RETURN"), method = "getFramebufferWidth", cancellable = true)
+	private void getFramebufferWidth(CallbackInfoReturnable<Integer> callbackInfo) {
+		callbackInfo.setReturnValue(scale(callbackInfo.getReturnValue()));
 	}
 	
-	/**
-	 @author Julian Dunskus
-	 */
-	@Overwrite
-	public int getFramebufferHeight() {
-		return scale(framebufferHeight);
-	}
-	
-	/**
-	 @author Julian Dunskus
-	 */
-	@Overwrite
-	public double getScaleFactor() {
-		return scaleFactor / ResolutionControlMod.getInstance().getCurrentScaleFactor();
+	@Inject(at = @At("RETURN"), method = "getFramebufferHeight", cancellable = true)
+	private void getFramebufferHeight(CallbackInfoReturnable<Integer> callbackInfo) {
+		callbackInfo.setReturnValue(scale(callbackInfo.getReturnValue()));
 	}
 	
 	private int scale(int value) {
 		int scaleFactor = ResolutionControlMod.getInstance().getCurrentScaleFactor();
 		return (int) Math.ceil(1d * value / scaleFactor);
+	}
+	
+	@Inject(at = @At("RETURN"), method = "getScaleFactor", cancellable = true)
+	private void getScaleFactor(CallbackInfoReturnable<Double> callbackInfo) {
+		callbackInfo.setReturnValue(callbackInfo.getReturnValue() / ResolutionControlMod.getInstance().getCurrentScaleFactor());
 	}
 	
 	@Inject(at = @At("RETURN"), method = "onFramebufferSizeChanged")
