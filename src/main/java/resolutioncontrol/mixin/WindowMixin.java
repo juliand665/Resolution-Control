@@ -10,21 +10,14 @@ import resolutioncontrol.ResolutionControlMod;
 
 @Mixin(Window.class)
 public class WindowMixin {
-	@Shadow
-	private int framebufferWidth;
-	@Shadow
-	private int framebufferHeight;
-	@Shadow
-	private double scaleFactor;
-	
 	@Inject(at = @At("RETURN"), method = "getFramebufferWidth", cancellable = true)
 	private void getFramebufferWidth(CallbackInfoReturnable<Integer> callbackInfo) {
-		callbackInfo.setReturnValue(scale(callbackInfo.getReturnValue()));
+		callbackInfo.setReturnValue(scale(callbackInfo.getReturnValueI()));
 	}
 	
 	@Inject(at = @At("RETURN"), method = "getFramebufferHeight", cancellable = true)
 	private void getFramebufferHeight(CallbackInfoReturnable<Integer> callbackInfo) {
-		callbackInfo.setReturnValue(scale(callbackInfo.getReturnValue()));
+		callbackInfo.setReturnValue(scale(callbackInfo.getReturnValueI()));
 	}
 	
 	private int scale(int value) {
@@ -34,7 +27,7 @@ public class WindowMixin {
 	
 	@Inject(at = @At("RETURN"), method = "getScaleFactor", cancellable = true)
 	private void getScaleFactor(CallbackInfoReturnable<Double> callbackInfo) {
-		callbackInfo.setReturnValue(callbackInfo.getReturnValue() / ResolutionControlMod.getInstance().getCurrentScaleFactor());
+		callbackInfo.setReturnValue(callbackInfo.getReturnValueD() / ResolutionControlMod.getInstance().getCurrentScaleFactor());
 	}
 	
 	@Inject(at = @At("RETURN"), method = "onFramebufferSizeChanged")

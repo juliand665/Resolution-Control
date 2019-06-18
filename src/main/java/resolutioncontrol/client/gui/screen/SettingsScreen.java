@@ -61,6 +61,8 @@ public final class SettingsScreen extends Screen {
 	
 	@Override
 	public void render(int mouseX, int mouseY, float time) {
+		assert minecraft != null;
+		
 		minecraft.getTextureManager().bindTexture(backgroundTexture);
 		GlStateManager.color4f(1, 1, 1, 1);
 		

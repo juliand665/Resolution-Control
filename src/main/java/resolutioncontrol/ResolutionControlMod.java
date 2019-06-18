@@ -16,23 +16,24 @@ import resolutioncontrol.util.KeyBindingHandler;
 import javax.annotation.Nullable;
 
 public class ResolutionControlMod implements ModInitializer {
-	private static ResolutionControlMod instance;
-	private static FabricKeyBinding settingsKeyBinding = FabricKeyBinding.Builder.create(
-		identifier("settings"),
-		InputUtil.Type.KEYSYM,
-		GLFW.GLFW_KEY_P,
-		"Resolution Control"
-	).build();
-	
 	public static final String MOD_ID = "resolutioncontrol";
 	
 	public static Identifier identifier(String path) {
 		return new Identifier(MOD_ID, path);
 	}
 	
+	private static ResolutionControlMod instance;
+	
 	public static ResolutionControlMod getInstance() {
 		return instance;
 	}
+	
+	private static FabricKeyBinding settingsKeyBinding = FabricKeyBinding.Builder.create(
+		identifier("settings"),
+		InputUtil.Type.KEYSYM,
+		GLFW.GLFW_KEY_P,
+		"Resolution Control"
+	).build();
 	
 	private boolean shouldScale = false;
 	private int scaleFactor = 8;
@@ -51,7 +52,6 @@ public class ResolutionControlMod implements ModInitializer {
 		ClientTickCallback.EVENT.register(new KeyBindingHandler(settingsKeyBinding) {
 			@Override
 			public void handlePress() {
-				System.out.println("pressed!");
 				MinecraftClient.getInstance().openScreen(new SettingsScreen());
 			}
 		});
