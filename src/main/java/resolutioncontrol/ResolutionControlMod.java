@@ -1,10 +1,11 @@
 package resolutioncontrol;
 
-import com.sun.istack.internal.Nullable;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.GlFramebuffer;
 import net.minecraft.client.util.Window;
+
+import javax.annotation.Nullable;
 
 public class ResolutionControlMod implements ModInitializer {
 	private static ResolutionControlMod instance;
