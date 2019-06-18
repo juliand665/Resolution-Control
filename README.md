@@ -1,16 +1,9 @@
-# Fabric Example Mod
+# Resolution Control
 
-## Setup
+Resolution Control allows you to render Minecraft's 3D portion (i.e. the main game, but not the HUD/GUIs/etc.) at a lower resolution, using nearest-neighbor upsampling. It even has a snazzy settings screen (open by pressing `P` by default) allowing you to adjust this as you go.
 
-1. Edit build.gradle and mod.json to suit your needs.
-    * The "mixins" object can be removed from mod.json if you do not need to use mixins.
-    * Please replace all occurences of "modid" with your own mod ID - sometimes, a different string may also suffice.
-2. Run the following command:
+![settings](GitHub/settings.png)
 
-```
-./gradlew idea
-```
+---
 
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+I created this mod mainly because Minecraft 1.13 made it render at full- rather than half-resolution on retina monitors, causing it to run really badly on my computer. Any way of downscaling I tried resulted in linear upsampling (rather than the nearest-neighbor upsampling Minecraft used to have), which looked blurry and terrible. Enter **Resolution Control**, the answer to your prayers!
