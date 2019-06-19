@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import resolutioncontrol.ResolutionControlMod;
 
 @Mixin(Window.class)
-public class WindowMixin {
+public abstract class WindowMixin {
 	@Inject(at = @At("RETURN"), method = "getFramebufferWidth", cancellable = true)
 	private void getFramebufferWidth(CallbackInfoReturnable<Integer> callbackInfo) {
 		callbackInfo.setReturnValue(scale(callbackInfo.getReturnValueI()));
