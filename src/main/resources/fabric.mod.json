@@ -9,8 +9,9 @@
     "juliand665"
   ],
   "contact": {
-    "homepage": "https://dapprgames.com/",
-    "sources": "https://github.com/juliand665/Resolution-Control"
+    "homepage": "https://dapprgames.com",
+    "sources": "https://github.com/juliand665/Resolution-Control",
+    "issues": "https://github.com/juliand665/Resolution-Control/issues"
   },
 
   "license": "MIT",
@@ -20,6 +21,9 @@
   "entrypoints": {
     "main": [
       "resolutioncontrol.ResolutionControlMod"
+    ],
+    "modmenu": [
+      "resolutioncontrol.compat.modmenu.ModMenuInfo"
     ]
   },
   "mixins": [

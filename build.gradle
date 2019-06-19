@@ -28,10 +28,11 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
-    modCompile "com.jamieswhiteshirt:developer-mode:1.0.11"
+    modCompile "com.jamieswhiteshirt:developer-mode:${project.developer_mode_version}"
+    modCompile "io.github.prospector.modmenu:ModMenu:${project.mod_menu_version}"
     
     // nullability annotations
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation "com.google.code.findbugs:jsr305:${project.findbugs_version}"
 }
 
 processResources {
