@@ -32,7 +32,7 @@ public class ResolutionControlMod implements ModInitializer {
 		identifier("settings"),
 		InputUtil.Type.KEYSYM,
 		GLFW.GLFW_KEY_P,
-		"Resolution Control"
+		"key.categories.misc"
 	).build();
 	
 	private boolean shouldScale = false;
