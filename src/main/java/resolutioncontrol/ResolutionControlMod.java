@@ -59,6 +59,8 @@ public class ResolutionControlMod implements ModInitializer {
 	public void setShouldScale(boolean shouldScale) {
 		if (shouldScale == this.shouldScale) return;
 		
+		if (getScaleFactor() == 1) return;
+		
 		Window window = MinecraftClient.getInstance().window;
 		if (framebuffer == null) {
 			this.shouldScale = true; // so we get the right dimensions
@@ -66,8 +68,8 @@ public class ResolutionControlMod implements ModInitializer {
 		}
 		
 		this.shouldScale = shouldScale;
-		updateViewport();
 		
+		// swap out framebuffers as needed
 		boolean shouldUpdateViewport = false;
 		if (shouldScale) {
 			framebuffer.beginWrite(shouldUpdateViewport);
@@ -78,16 +80,19 @@ public class ResolutionControlMod implements ModInitializer {
 	}
 	
 	public int getScaleFactor() {
-		return Config.getInstance().scaleFactor;
+		return Config.getScaleFactor();
 	}
 	
 	public void setScaleFactor(int scaleFactor) {
-		if (scaleFactor == Config.getInstance().scaleFactor) return;
+		if (scaleFactor == Config.getScaleFactor()) return;
 		
 		Config.getInstance().scaleFactor = scaleFactor;
 		
 		if (shouldScale) {
 			updateViewport();
+			if (scaleFactor == 1) {
+				MinecraftClient.getInstance().getFramebuffer().beginWrite(false);
+			}
 		}
 		
 		updateFramebufferSize();
@@ -96,7 +101,7 @@ public class ResolutionControlMod implements ModInitializer {
 	}
 	
 	public int getCurrentScaleFactor() {
-		return shouldScale ? Config.getInstance().scaleFactor : 1;
+		return shouldScale ? Config.getScaleFactor() : 1;
 	}
 	
 	public void onResolutionChanged() {
@@ -105,6 +110,7 @@ public class ResolutionControlMod implements ModInitializer {
 	
 	private void updateFramebufferSize() {
 		if (framebuffer == null) return;
+		if (getScaleFactor() == 1) return;
 		
 		Window window = MinecraftClient.getInstance().window;
 		boolean prev = shouldScale;

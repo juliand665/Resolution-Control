@@ -1,15 +1,16 @@
 package resolutioncontrol.client.gui.screen;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Identifier;
 import resolutioncontrol.ResolutionControlMod;
-import resolutioncontrol.util.Config;
 
-import static org.lwjgl.opengl.GL11.GL_GREATER;
+import javax.annotation.Nullable;
 
 public final class SettingsScreen extends Screen {
 	private static final Identifier backgroundTexture = ResolutionControlMod.identifier("textures/gui/settings.png");
@@ -18,18 +19,31 @@ public final class SettingsScreen extends Screen {
 		return new TranslatableComponent("screen." + ResolutionControlMod.MOD_ID + ".settings." + path, args);
 	}
 	
+	private final int containerWidth = 192;
+	private final int containerHeight = 128;
+	
+	private final ResolutionControlMod mod = ResolutionControlMod.getInstance();
+	
+	@Nullable
+	private final Screen parent;
+	
 	private ButtonWidget increaseButton;
 	private ButtonWidget decreaseButton;
+	private ButtonWidget doneButton;
+	
 	private int centerX;
 	private int centerY;
 	private int startX;
 	private int startY;
-	private final int containerWidth = 192;
-	private final int containerHeight = 128;
-	private final ResolutionControlMod mod = ResolutionControlMod.getInstance();
+	
+	public SettingsScreen(Screen parent) {
+		super(component("title"));
+		
+		this.parent = parent;
+	}
 	
 	public SettingsScreen() {
-		super(component("title"));
+		this(MinecraftClient.getInstance().currentScreen);
 	}
 	
 	@Override
@@ -43,7 +57,7 @@ public final class SettingsScreen extends Screen {
 		
 		int buttonSize = 20;
 		int buttonOffset = buttonSize / 2;
-		int buttonY = centerY + 30 - buttonSize / 2;
+		int buttonY = centerY + 5 - buttonSize / 2;
 		
 		decreaseButton = new ButtonWidget(
 			centerX - buttonOffset - buttonSize / 2, buttonY,
@@ -59,12 +73,25 @@ public final class SettingsScreen extends Screen {
 			button -> changeScaleFactor(+1)
 		);
 		addButton(increaseButton);
+		
+		doneButton = new ButtonWidget(
+			centerX - 100 / 2, startY + containerHeight - 10 - 20,
+			100, buttonSize,
+			I18n.translate("gui.done"),
+			button -> minecraft.openScreen(parent)
+		);
+		addButton(doneButton);
 	}
 	
 	@Override
 	public void render(int mouseX, int mouseY, float time) {
 		assert minecraft != null;
 		
+		if (minecraft.world == null) {
+			renderDirtBackground(0);
+		}
+		
+		GlStateManager.enableAlphaTest();
 		minecraft.getTextureManager().bindTexture(backgroundTexture);
 		GlStateManager.color4f(1, 1, 1, 1);
 		
@@ -76,10 +103,10 @@ public final class SettingsScreen extends Screen {
 			textureWidth, textureHeight
 		);
 		
-		drawCenteredString(getTitle().getFormattedText(), centerX, startY + 20, 0x404040);
+		drawCenteredString(getTitle().getFormattedText(), centerX, startY + 10, 0x404040);
 		
 		Component scaleFactor = component("current", mod.getScaleFactor());
-		drawCenteredString(scaleFactor.getFormattedText(), centerX, centerY, 0x000000);
+		drawCenteredString(scaleFactor.getFormattedText(), centerX, centerY - 20, 0x000000);
 		
 		super.render(mouseX, mouseY, time); // buttons
 	}
