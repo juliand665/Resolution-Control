@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Identifier;
 import resolutioncontrol.ResolutionControlMod;
+import resolutioncontrol.util.Config;
 
 import static org.lwjgl.opengl.GL11.GL_GREATER;
 
@@ -25,6 +26,7 @@ public final class SettingsScreen extends Screen {
 	private int startY;
 	private final int containerWidth = 192;
 	private final int containerHeight = 128;
+	private final ResolutionControlMod mod = ResolutionControlMod.getInstance();
 	
 	public SettingsScreen() {
 		super(component("title"));
@@ -76,7 +78,7 @@ public final class SettingsScreen extends Screen {
 		
 		drawCenteredString(getTitle().getFormattedText(), centerX, startY + 20, 0x404040);
 		
-		Component scaleFactor = component("current", ResolutionControlMod.getInstance().getScaleFactor());
+		Component scaleFactor = component("current", mod.getScaleFactor());
 		drawCenteredString(scaleFactor.getFormattedText(), centerX, centerY, 0x000000);
 		
 		super.render(mouseX, mouseY, time); // buttons
@@ -87,7 +89,6 @@ public final class SettingsScreen extends Screen {
 	}
 	
 	private void changeScaleFactor(int change) {
-		ResolutionControlMod mod = ResolutionControlMod.getInstance();
 		int scaleFactor = mod.getScaleFactor() + change;
 		
 		if (scaleFactor < 1) {

@@ -11,7 +11,7 @@ import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 import resolutioncontrol.client.gui.screen.SettingsScreen;
-import resolutioncontrol.util.KeyBindingHandler;
+import resolutioncontrol.util.*;
 
 import javax.annotation.Nullable;
 
@@ -36,7 +36,6 @@ public class ResolutionControlMod implements ModInitializer {
 	).build();
 	
 	private boolean shouldScale = false;
-	private int scaleFactor = 8;
 	@Nullable
 	private GlFramebuffer framebuffer;
 	
@@ -79,33 +78,33 @@ public class ResolutionControlMod implements ModInitializer {
 	}
 	
 	public int getScaleFactor() {
-		return scaleFactor;
+		return Config.getInstance().scaleFactor;
 	}
 	
 	public void setScaleFactor(int scaleFactor) {
-		if (scaleFactor == this.scaleFactor) return;
+		if (scaleFactor == Config.getInstance().scaleFactor) return;
 		
-		this.scaleFactor = scaleFactor;
+		Config.getInstance().scaleFactor = scaleFactor;
 		
 		if (shouldScale) {
 			updateViewport();
 		}
 		
 		updateFramebufferSize();
+		
+		ConfigHandler.instance.saveConfig();
 	}
 	
 	public int getCurrentScaleFactor() {
-		return shouldScale ? scaleFactor : 1;
+		return shouldScale ? Config.getInstance().scaleFactor : 1;
 	}
 	
 	public void onResolutionChanged() {
-		if (framebuffer != null) {
-			updateFramebufferSize();
-		}
+		updateFramebufferSize();
 	}
 	
 	private void updateFramebufferSize() {
-		assert framebuffer != null;
+		if (framebuffer == null) return;
 		
 		Window window = MinecraftClient.getInstance().window;
 		boolean prev = shouldScale;
