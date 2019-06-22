@@ -81,6 +81,8 @@ public final class SettingsScreen extends Screen {
 			button -> minecraft.openScreen(parent)
 		);
 		addButton(doneButton);
+		
+		updateButtons();
 	}
 	
 	@Override
@@ -123,6 +125,10 @@ public final class SettingsScreen extends Screen {
 		}
 		mod.setScaleFactor(scaleFactor);
 		
-		decreaseButton.active = scaleFactor > 1;
+		updateButtons();
+	}
+	
+	private void updateButtons() {
+		decreaseButton.active = mod.getScaleFactor() > 1;
 	}
 }
