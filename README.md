@@ -1,5 +1,7 @@
 # Resolution Control
 
+[CurseForge](https://minecraft.curseforge.com/projects/resolution-control)
+
 Resolution Control allows you to render Minecraft's 3D portion (i.e. the main game, but not the HUD/GUIs/etc.) at a lower resolution, using nearest-neighbor upsampling. It even has a snazzy settings screen (open by pressing `P` by default) allowing you to adjust this as you go.
 
 ![settings](GitHub/settings.png)
