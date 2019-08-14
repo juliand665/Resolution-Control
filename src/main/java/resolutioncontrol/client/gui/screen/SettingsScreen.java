@@ -5,8 +5,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import resolutioncontrol.ResolutionControlMod;
 
@@ -15,8 +15,8 @@ import javax.annotation.Nullable;
 public final class SettingsScreen extends Screen {
 	private static final Identifier backgroundTexture = ResolutionControlMod.identifier("textures/gui/settings.png");
 	
-	private static Component component(String path, Object... args) {
-		return new TranslatableComponent("screen." + ResolutionControlMod.MOD_ID + ".settings." + path, args);
+	private static Text text(String path, Object... args) {
+		return new TranslatableText("screen." + ResolutionControlMod.MOD_ID + ".settings." + path, args);
 	}
 	
 	private final int containerWidth = 192;
@@ -37,7 +37,7 @@ public final class SettingsScreen extends Screen {
 	private int startY;
 	
 	public SettingsScreen(Screen parent) {
-		super(component("title"));
+		super(text("title"));
 		
 		this.parent = parent;
 	}
@@ -105,10 +105,10 @@ public final class SettingsScreen extends Screen {
 			textureWidth, textureHeight
 		);
 		
-		drawCenteredString(getTitle().getFormattedText(), centerX, startY + 10, 0x404040);
+		drawCenteredString(getTitle().asFormattedString(), centerX, startY + 10, 0x404040);
 		
-		Component scaleFactor = component("current", mod.getScaleFactor());
-		drawCenteredString(scaleFactor.getFormattedText(), centerX, centerY - 20, 0x000000);
+		Text scaleFactor = text("current", mod.getScaleFactor());
+		drawCenteredString(scaleFactor.asFormattedString(), centerX, centerY - 20, 0x000000);
 		
 		super.render(mouseX, mouseY, time); // buttons
 	}
