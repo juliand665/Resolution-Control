@@ -1,40 +1,40 @@
 {
-  "schemaVersion": 1,
-  "id": "resolutioncontrol",
-  "version": "${version}",
+	"schemaVersion": 1,
+	"id": "resolutioncontrol",
+	"version": "${version}",
 
-  "name": "Resolution Control",
-  "description": "Gives you more control over minecraft's render resolution.",
-  "authors": [
-    "juliand665"
-  ],
-  "contact": {
-    "homepage": "https://dapprgames.com",
-    "sources": "https://github.com/juliand665/Resolution-Control",
-    "issues": "https://github.com/juliand665/Resolution-Control/issues"
-  },
+	"name": "Resolution Control",
+	"description": "Gives you more control over minecraft's render resolution.",
+	"authors": [
+		"juliand665"
+	],
+	"contact": {
+		"homepage": "https://dapprgames.com",
+		"sources": "https://github.com/juliand665/Resolution-Control",
+		"issues": "https://github.com/juliand665/Resolution-Control/issues"
+	},
 
-  "license": "MIT",
-  "icon": "assets/resolutioncontrol/icon.png",
+	"license": "MIT",
+	"icon": "assets/resolutioncontrol/icon.png",
 
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "resolutioncontrol.ResolutionControlMod"
-    ],
-    "modmenu": [
-      "resolutioncontrol.compat.modmenu.ModMenuInfo"
-    ]
-  },
-  "mixins": [
-    "resolutioncontrol.mixins.json"
-  ],
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"resolutioncontrol.ResolutionControlMod"
+		],
+		"modmenu": [
+			"resolutioncontrol.compat.modmenu.ModMenuInfo"
+		]
+	},
+	"mixins": [
+		"resolutioncontrol.mixins.json"
+	],
 
-  "requires": {
-    "fabricloader": ">=0.4.0",
-    "fabric": "*"
-  },
-  "suggests": {
-    "flamingo": "*"
-  }
+	"depends": {
+		"fabricloader": ">=0.4.0",
+		"fabric": "*"
+	},
+	"suggests": {
+		"flamingo": "*"
+	}
 }
