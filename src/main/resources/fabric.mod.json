@@ -17,7 +17,7 @@
 	"license": "MIT",
 	"icon": "assets/resolutioncontrol/icon.png",
 
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			"resolutioncontrol.ResolutionControlMod"
