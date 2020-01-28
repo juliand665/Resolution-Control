@@ -6,7 +6,9 @@
   ],
   "client": [
     "WindowMixin",
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "MinecraftClientMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
