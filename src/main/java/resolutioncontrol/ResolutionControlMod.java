@@ -34,7 +34,7 @@ public class ResolutionControlMod implements ModInitializer {
 	private static FabricKeyBinding settingsKeyBinding = FabricKeyBinding.Builder.create(
 		identifier("settings"),
 		InputUtil.Type.KEYSYM,
-		GLFW.GLFW_KEY_P,
+		GLFW.GLFW_KEY_O,
 		"key.categories.misc"
 	).build();
 	
