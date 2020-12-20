@@ -9,14 +9,13 @@ import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import resolutioncontrol.client.gui.screen.SettingsScreen;
 import resolutioncontrol.util.*;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
+
 public class ResolutionControlMod implements ModInitializer {
 	public static final String MOD_ID = "resolutioncontrol";
 	
@@ -35,7 +34,7 @@ public class ResolutionControlMod implements ModInitializer {
 	private static FabricKeyBinding settingsKeyBinding = FabricKeyBinding.Builder.create(
 		identifier("settings"),
 		InputUtil.Type.KEYSYM,
-		GLFW.GLFW_KEY_P,
+		GLFW.GLFW_KEY_O,
 		"key.categories.misc"
 	).build();
 	
