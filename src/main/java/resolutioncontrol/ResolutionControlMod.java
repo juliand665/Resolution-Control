@@ -5,15 +5,16 @@ import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.GlFramebuffer;
+import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import resolutioncontrol.client.gui.screen.SettingsScreen;
 import resolutioncontrol.util.*;
 
-import javax.annotation.Nullable;
+
 
 public class ResolutionControlMod implements ModInitializer {
 	public static final String MOD_ID = "resolutioncontrol";
@@ -21,6 +22,8 @@ public class ResolutionControlMod implements ModInitializer {
 	public static Identifier identifier(String path) {
 		return new Identifier(MOD_ID, path);
 	}
+	
+	private static MinecraftClient client = MinecraftClient.getInstance();
 	
 	private static ResolutionControlMod instance;
 	
@@ -31,13 +34,17 @@ public class ResolutionControlMod implements ModInitializer {
 	private static FabricKeyBinding settingsKeyBinding = FabricKeyBinding.Builder.create(
 		identifier("settings"),
 		InputUtil.Type.KEYSYM,
-		GLFW.GLFW_KEY_P,
+		GLFW.GLFW_KEY_O,
 		"key.categories.misc"
 	).build();
 	
 	private boolean shouldScale = false;
+	
 	@Nullable
-	private GlFramebuffer framebuffer;
+	private Framebuffer framebuffer;
+	
+	@Nullable
+	private Framebuffer clientFramebuffer;
 	
 	@Override
 	public void onInitialize() {
@@ -51,7 +58,7 @@ public class ResolutionControlMod implements ModInitializer {
 		ClientTickCallback.EVENT.register(new KeyBindingHandler(settingsKeyBinding) {
 			@Override
 			public void handlePress() {
-				MinecraftClient.getInstance().openScreen(new SettingsScreen());
+				client.openScreen(new SettingsScreen());
 			}
 		});
 	}
@@ -61,22 +68,38 @@ public class ResolutionControlMod implements ModInitializer {
 		
 		if (getScaleFactor() == 1) return;
 		
-		Window window = MinecraftClient.getInstance().window;
+		Window window = getWindow();
 		if (framebuffer == null) {
 			this.shouldScale = true; // so we get the right dimensions
-			framebuffer = new GlFramebuffer(window.getFramebufferWidth(), window.getFramebufferHeight(), true, MinecraftClient.IS_SYSTEM_MAC);
+			framebuffer = new Framebuffer(
+				window.getFramebufferWidth(),
+				window.getFramebufferHeight(),
+				true,
+				MinecraftClient.IS_SYSTEM_MAC
+			);
 		}
 		
 		this.shouldScale = shouldScale;
 		
+		client.getProfiler().swap(shouldScale ? "startScaling" : "finishScaling");
+		
 		// swap out framebuffers as needed
-		boolean shouldUpdateViewport = false;
+		boolean shouldUpdateViewport = true;
 		if (shouldScale) {
+			clientFramebuffer = client.getFramebuffer();
+			setClientFramebuffer(framebuffer);
 			framebuffer.beginWrite(shouldUpdateViewport);
+			// nothing on the client's framebuffer yet
 		} else {
-			MinecraftClient.getInstance().getFramebuffer().beginWrite(shouldUpdateViewport);
-			framebuffer.draw(window.getFramebufferWidth(), window.getFramebufferHeight());
+			setClientFramebuffer(clientFramebuffer);
+			client.getFramebuffer().beginWrite(shouldUpdateViewport);
+			framebuffer.draw(
+				window.getFramebufferWidth(),
+				window.getFramebufferHeight()
+			);
 		}
+		
+		client.getProfiler().swap("level");
 	}
 	
 	public int getScaleFactor() {
@@ -87,13 +110,6 @@ public class ResolutionControlMod implements ModInitializer {
 		if (scaleFactor == Config.getScaleFactor()) return;
 		
 		Config.getInstance().scaleFactor = scaleFactor;
-		
-		if (shouldScale) {
-			updateViewport();
-			if (scaleFactor == 1) {
-				MinecraftClient.getInstance().getFramebuffer().beginWrite(false);
-			}
-		}
 		
 		updateFramebufferSize();
 		
@@ -110,16 +126,35 @@ public class ResolutionControlMod implements ModInitializer {
 	
 	private void updateFramebufferSize() {
 		if (framebuffer == null) return;
-		if (getScaleFactor() == 1) return;
 		
-		Window window = MinecraftClient.getInstance().window;
+		if (getScaleFactor() != 1) {
+			// resize if not unused
+			resize(framebuffer);
+		}
+		
+		resize(client.worldRenderer.getEntityOutlinesFramebuffer());
+	}
+	
+	public void resize(Framebuffer framebuffer) {
 		boolean prev = shouldScale;
 		shouldScale = true;
-		framebuffer.resize(window.getFramebufferWidth(), window.getFramebufferHeight(), MinecraftClient.IS_SYSTEM_MAC);
+		framebuffer.resize(
+			getWindow().getFramebufferWidth(),
+			getWindow().getFramebufferHeight(),
+			MinecraftClient.IS_SYSTEM_MAC
+		);
 		shouldScale = prev;
 	}
 	
-	private void updateViewport() {
-		MinecraftClient.getInstance().window.method_4493(MinecraftClient.IS_SYSTEM_MAC);
+	private Window getWindow() {
+		return client.getWindow();
+	}
+	
+	private void setClientFramebuffer(Framebuffer framebuffer) {
+		((MutableMinecraftClient) client).setFramebuffer(framebuffer);
+	}
+	
+	public interface MutableMinecraftClient {
+		void setFramebuffer(Framebuffer framebuffer);
 	}
 }

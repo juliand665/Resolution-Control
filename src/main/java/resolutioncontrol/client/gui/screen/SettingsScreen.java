@@ -5,12 +5,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import resolutioncontrol.ResolutionControlMod;
 
-import javax.annotation.Nullable;
 
 public final class SettingsScreen extends Screen {
 	private static final Identifier backgroundTexture = ResolutionControlMod.identifier("textures/gui/settings.png");
@@ -62,14 +64,14 @@ public final class SettingsScreen extends Screen {
 		decreaseButton = new ButtonWidget(
 			centerX - buttonOffset - buttonSize / 2, buttonY,
 			buttonSize, buttonSize,
-			"-",
+			new LiteralText("-"),
 			button -> changeScaleFactor(-1));
 		addButton(decreaseButton);
 		
 		increaseButton = new ButtonWidget(
 			centerX + buttonOffset - buttonSize / 2, buttonY,
 			buttonSize, buttonSize,
-			"+",
+				new LiteralText("+"),
 			button -> changeScaleFactor(+1)
 		);
 		addButton(increaseButton);
@@ -77,8 +79,8 @@ public final class SettingsScreen extends Screen {
 		doneButton = new ButtonWidget(
 			centerX - 100 / 2, startY + containerHeight - 10 - 20,
 			100, buttonSize,
-			I18n.translate("gui.done"),
-			button -> minecraft.openScreen(parent)
+			new TranslatableText("gui.done"),
+			button -> client.openScreen(parent)
 		);
 		addButton(doneButton);
 		
@@ -86,35 +88,36 @@ public final class SettingsScreen extends Screen {
 	}
 	
 	@Override
-	public void render(int mouseX, int mouseY, float time) {
-		assert minecraft != null;
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float time) {
+		assert client != null;
 		
-		if (minecraft.world == null) {
-			renderDirtBackground(0);
+		if (client.world == null) {
+			renderBackgroundTexture(0);
 		}
 		
 		GlStateManager.enableAlphaTest();
-		minecraft.getTextureManager().bindTexture(backgroundTexture);
+		client.getTextureManager().bindTexture(backgroundTexture);
 		GlStateManager.color4f(1, 1, 1, 1);
 		
 		int textureWidth = 256;
 		int textureHeight = 192;
-		blit(
+		drawTexture(
+			matrices,
 			centerX - textureWidth / 2, centerY - textureHeight / 2,
 			0, 0,
 			textureWidth, textureHeight
 		);
 		
-		drawCenteredString(getTitle().asFormattedString(), centerX, startY + 10, 0x404040);
+		drawCenteredString(matrices, getTitle().getString(), centerX, startY + 10, 0x404040);
 		
 		Text scaleFactor = text("current", mod.getScaleFactor());
-		drawCenteredString(scaleFactor.asFormattedString(), centerX, centerY - 20, 0x000000);
+		drawCenteredString(matrices, scaleFactor.getString(), centerX, centerY - 20, 0x000000);
 		
-		super.render(mouseX, mouseY, time); // buttons
+		super.render(matrices, mouseX, mouseY, time); // buttons
 	}
 	
-	private void drawCenteredString(String text, int x, int y, int color) {
-		font.draw(text, x - font.getStringWidth(text) / 2, y, color);
+	private void drawCenteredString(MatrixStack matrices, String text, int x, int y, int color) {
+		textRenderer.draw(matrices, text, x - textRenderer.getWidth(text) / 2, y, color);
 	}
 	
 	private void changeScaleFactor(int change) {
