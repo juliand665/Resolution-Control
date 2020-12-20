@@ -14,8 +14,6 @@ import org.lwjgl.glfw.GLFW;
 import resolutioncontrol.client.gui.screen.SettingsScreen;
 import resolutioncontrol.util.*;
 
-
-
 public class ResolutionControlMod implements ModInitializer {
 	public static final String MOD_ID = "resolutioncontrol";
 	
