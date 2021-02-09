@@ -22,7 +22,7 @@ public abstract class WindowMixin {
 	
 	private int scale(int value) {
 		int scaleFactor = ResolutionControlMod.getInstance().getCurrentScaleFactor();
-		return (int) Math.ceil(1d * value / scaleFactor);
+		return (int) Math.ceil(1d * value * scaleFactor);
 	}
 	
 	@Inject(at = @At("RETURN"), method = "getScaleFactor", cancellable = true)

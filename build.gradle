@@ -29,6 +29,8 @@ dependencies {
 	// You may need to force-disable transitivity on them.
 	//modCompile "com.jamieswhiteshirt:developer-mode:${project.developer_mode_version}"
 	modCompile "io.github.prospector:modmenu:${project.mod_menu_version}"
+
+	modRuntime "io.github.ultimateboomer:smoothboot-fabric:1.16.4-1.4.0"
 }
 
 processResources {
